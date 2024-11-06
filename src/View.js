@@ -18,8 +18,9 @@ const View = ()=>{//초깃값설정
       const {data} = res;  
       setBoard({
         title:data[0].BOARD_TITLE,
-        content: data[0].BOARD_CONTENT     
-      })
+        content: data[0].BOARD_CONTENT,
+        image :  data[0].IMAGE_PATH //이미지 정보
+      });
     })
     .catch((e)=> {
       // 에러 핸들링
@@ -36,6 +37,7 @@ const View = ()=>{//초깃값설정
       <h2>{board.title}</h2>
       <h2>본문</h2>
       {board.content}
+      <img src={`http://localhost:8000/${board.image}`} style={{maxWidth:'300px'}}/>
       <hr/>
       <Button variant='secondary' onClick={()=>{navigate(-1)}}>목록</Button>  
     </div>  
