@@ -1,29 +1,22 @@
-import React, { Component } from 'react'
+import React, { useEffect, useState } from 'react'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Axios from "axios";
-import { Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
-export default class View extends Component {
-  state= {
-    title:'',
-    content:''
-  }
 
-  detail = () =>{   
-    let url = window.location.href;
-    let urlParams = url.split('?')[1];
-    console.log(urlParams); //id=5
+const View = ()=>{//초깃값설정
+  console.log(useEffect);
+  const [board, setBoard] = useState(null); //기본값 없음
+  const navigate = useNavigate();
+  const { id } = useParams();
+  console.log(id);
 
-    const searchParams = new URLSearchParams(urlParams); //{id:5}
-
-    let id = searchParams.get('id'); //5
-
+  useEffect(()=>{
     Axios.get(`http://localhost:8000/detail?id=${id}`)
     .then((res) => {
       const {data} = res;  
-      console.log(data);
-      this.setState({
+      setBoard({
         title:data[0].BOARD_TITLE,
         content: data[0].BOARD_CONTENT     
       })
@@ -32,22 +25,21 @@ export default class View extends Component {
       // 에러 핸들링
       console.log(e);
     });     
-  }
-  //this.prop.isModifyMode에 변동사항이 생기면 detail 함수 실행, componentDidUpdate 함수로 
+    },[id]);
+    console.log(board);
 
-  componentDidMount() { //true, false 확인
-    this.detail();
-  }
+    if(!board) return <div> Loading. . .</div>;
 
-  render() {
-    return (     
-      <div>
-        <h2>{this.state.title}</h2>
-        <h2>본문</h2>
-        {this.state.content}
-        <hr/>
-        <Link to="/" className="btn btn-primary">목록</Link>  
-      </div>      
-    )
-  }
+
+  return (
+    <div>
+      <h2>{board.title}</h2>
+      <h2>본문</h2>
+      {board.content}
+      <hr/>
+      <Button variant='secondary' onClick={()=>{navigate(-1)}}>목록</Button>  
+    </div>  
+  )
 }
+export default View;
+
